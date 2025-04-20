@@ -13,6 +13,7 @@ include('./includes/path.inc.php');
             <div class="login-head">
                 <h4><?php echo $BRAND_NAME;?></h4>
                 <p>Hello there, Sign into your Account!</p>
+                <p> hello madafaka</p>
             </div>
             <div class="login-body">
                 <form name="login_form" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
