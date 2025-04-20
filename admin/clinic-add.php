@@ -122,10 +122,13 @@ include(SELECT_HELPER);
 					$clinicstmt->bind_param("ssssssss", $clinic_name, $email, $url, $contact, $address, $city, $state, $zipcode);
 
 					if ($clinicstmt->execute()) {
+                        $last_id = mysqli_insert_id($conn); // Get the last inserted clinic ID
+
+                        // Prepare $hourstmt before executing
+                        $hourstmt = $conn->prepare("INSERT INTO business_hour (open_week, close_week, open_sat, close_sat, open_sun, close_sun, clinic_id) VALUES (?,?,?,?,?,?,?)");
+                        $hourstmt->bind_param("sssssss", $opensweek, $closeweek, $openssat, $closesat, $openssun, $closesun, $last_id);
+
                         if ($hourstmt->execute()) {
-                            $last_id = mysqli_insert_id($conn);
-                            $hourstmt = $conn->prepare("INSERT INTO business_hour (open_week, close_week, open_sat, close_sat, open_sun, close_sun, clinic_id) VALUES (?,?,?,?,?,?,?)");
-                            $hourstmt->bind_param("sssssss", $opensweek, $closeweek, $openssat, $closesat, $openssun, $closesun, $last_id);
                             echo '<script>
                                 Swal.fire({ title: "Great!", text: "Record Updated!", type: "success" }).then((result) => {
                                     if (result.value) { window.location.href = "clinic-list.php"; }
