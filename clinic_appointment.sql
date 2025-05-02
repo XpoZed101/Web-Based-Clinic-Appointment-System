@@ -222,7 +222,7 @@ CREATE TABLE `medical_record` (
 --
 
 CREATE TABLE `patients` (
-  `patient_id` int(11) NOT NULL,
+  `patient_id` int(11) NOT NULL AUTO_INCREMENT,
   `patient_avatar` varchar(255) NOT NULL,
   `patient_firstname` varchar(255) NOT NULL,
   `patient_lastname` varchar(255) NOT NULL,
@@ -241,7 +241,8 @@ CREATE TABLE `patients` (
   `patient_state` varchar(255) NOT NULL,
   `patient_zipcode` varchar(255) NOT NULL,
   `patient_country` varchar(255) NOT NULL,
-  `date_created` datetime NOT NULL
+  `date_created` datetime NOT NULL,
+  PRIMARY KEY (`patient_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -251,11 +252,12 @@ CREATE TABLE `patients` (
 --
 
 CREATE TABLE `patient_reset` (
-  `reset_id` int(11) NOT NULL,
+  `reset_id` int(11) NOT NULL AUTO_INCREMENT,
   `reset_email` varchar(255) NOT NULL,
   `reset_selector` text NOT NULL,
   `reset_token` longtext NOT NULL,
-  `reset_expires` text NOT NULL
+  `reset_expires` text NOT NULL,
+  PRIMARY KEY (`reset_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -539,6 +541,22 @@ ALTER TABLE `treatment_type`
 --
 ALTER TABLE `doctors`
   ADD CONSTRAINT `doctors_ibfk_1` FOREIGN KEY (`clinic_id`) REFERENCES `clinics` (`clinic_id`);
+
+-- Adding missing foreign key constraints
+ALTER TABLE `appointment`
+  ADD CONSTRAINT `appointment_patient_fk` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`patient_id`),
+  ADD CONSTRAINT `appointment_doctor_fk` FOREIGN KEY (`doctor_id`) REFERENCES `doctors` (`doctor_id`),
+  ADD CONSTRAINT `appointment_clinic_fk` FOREIGN KEY (`clinic_id`) REFERENCES `clinics` (`clinic_id`);
+
+ALTER TABLE `medical_record`
+  ADD CONSTRAINT `medical_record_patient_fk` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`patient_id`),
+  ADD CONSTRAINT `medical_record_doctor_fk` FOREIGN KEY (`doctor_id`) REFERENCES `doctors` (`doctor_id`),
+  ADD CONSTRAINT `medical_record_clinic_fk` FOREIGN KEY (`clinic_id`) REFERENCES `clinics` (`clinic_id`);
+
+ALTER TABLE `reviews`
+  ADD CONSTRAINT `reviews_patient_fk` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`patient_id`),
+  ADD CONSTRAINT `reviews_doctor_fk` FOREIGN KEY (`doctor_id`) REFERENCES `doctors` (`doctor_id`);
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
